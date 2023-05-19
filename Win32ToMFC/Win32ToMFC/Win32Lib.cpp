@@ -1,5 +1,6 @@
 #include <windows.h>
 #include <stdio.h>
+#include <tchar.h>
 
 LRESULT OnChar(
 	HWND hWnd,
@@ -35,6 +36,29 @@ LRESULT CALLBACK WinProc(
 	WPARAM wParam,
 	LPARAM lParam
 );
+
+LRESULT OnCreate(
+	HWND hWnd,
+	UINT uMsg,
+	WPARAM wParam,
+	LPARAM lParam
+);
+
+typedef LRESULT(*FXN)(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+#define dim(x) (sizeof(x) / sizeof(x[0]))
+struct tagMESSAGEMAP {
+	UINT uMsg;
+	FXN pFun;
+};
+
+
+tagMESSAGEMAP MessageMaps[] = {
+	WM_CHAR,			OnChar,
+	WM_LBUTTONDOWN,		OnLButtonDown,
+	WM_PAINT,			OnPaint,
+	WM_DESTROY,			OnDestroy,
+	WM_CREATE,			OnCreate,
+};
 
 int WINAPI WinMain(
 	_In_ HINSTANCE hInstance,
@@ -96,24 +120,14 @@ LRESULT CALLBACK WinProc(
 	LPARAM lParam
 )
 {
-	switch (uMsg)
-	{
-	case WM_CHAR:
-		OnChar(hWnd, uMsg,wParam, lParam);
-		break;
-	case WM_LBUTTONDOWN:
-		OnLButtonDown(hWnd, uMsg, wParam, lParam);
-		break;
-	case WM_PAINT:
-		OnPaint(hWnd, uMsg, wParam, lParam);
-		break;
-	case WM_DESTROY:
-		OnDestroy(hWnd, uMsg, wParam, lParam);
-	default:
-		return DefWindowProc(hWnd, uMsg, wParam, lParam);
+	for (int i = 0; i < dim(MessageMaps); i++) {
+		if (uMsg == MessageMaps[i].uMsg) {
+			FXN fun = MessageMaps[i].pFun;
+			return fun(hWnd, uMsg, wParam, lParam);
+		}
 	}
 
-	return 0;
+	return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 
 LRESULT OnChar(
@@ -163,5 +177,15 @@ LRESULT OnDestroy(
 	LPARAM lParam
 ) {
 	PostQuitMessage(0);
+	return 0;
+}
+
+LRESULT OnCreate(
+	HWND hWnd,
+	UINT uMsg,
+	WPARAM wParam,
+	LPARAM lParam
+) {
+	::MessageBox(NULL, __T("onCreate"), __T("onCreate") ,MB_OK);
 	return 0;
 }
