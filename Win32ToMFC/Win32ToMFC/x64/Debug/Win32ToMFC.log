@@ -1,0 +1,4 @@
+﻿  Win32Lib.cpp
+D:\gitRepo\win32ToMFC\win32ToMFC\Win32ToMFC\Win32ToMFC\Win32Lib.cpp(81,73): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+D:\gitRepo\win32ToMFC\win32ToMFC\Win32ToMFC\Win32ToMFC\Win32Lib.cpp(88,72): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+  Win32ToMFC.vcxproj -> D:\gitRepo\win32ToMFC\win32ToMFC\Win32ToMFC\x64\Debug\Win32ToMFC.exe
