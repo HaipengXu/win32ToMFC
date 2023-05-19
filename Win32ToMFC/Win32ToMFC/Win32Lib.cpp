@@ -1,6 +1,34 @@
 #include <windows.h>
 #include <stdio.h>
 
+LRESULT OnChar(
+	HWND hWnd,
+	UINT uMsg,
+	WPARAM wParam,
+	LPARAM lParam
+);
+
+LRESULT OnLButtonDown(
+	HWND hWnd,
+	UINT uMsg,
+	WPARAM wParam,
+	LPARAM lParam
+);
+
+LRESULT OnPaint(
+	HWND hWnd,
+	UINT uMsg,
+	WPARAM wParam,
+	LPARAM lParam
+);
+
+LRESULT OnDestroy(
+	HWND hWnd,
+	UINT uMsg,
+	WPARAM wParam,
+	LPARAM lParam
+);
+
 LRESULT CALLBACK WinProc(
 	HWND hwnd,
 	UINT uMsg,
@@ -62,7 +90,7 @@ int WINAPI WinMain(
 }
 
 LRESULT CALLBACK WinProc(
-	HWND hwnd,
+	HWND hWnd,
 	UINT uMsg,
 	WPARAM wParam,
 	LPARAM lParam
@@ -71,28 +99,69 @@ LRESULT CALLBACK WinProc(
 	switch (uMsg)
 	{
 	case WM_CHAR:
-		TCHAR sztchar[20];
-		wsprintf(sztchar, TEXT("you pressed %c key"), (TCHAR)wParam);
-		MessageBox(hwnd, sztchar, TEXT("WM_CHAR"), 0);
+		OnChar(hWnd, uMsg,wParam, lParam);
 		break;
 	case WM_LBUTTONDOWN:
-		HDC hdc;
-		hdc = GetDC(hwnd);
-		TextOut(hdc, 0, 50, TEXT("win32 to MFC"), wcslen(TEXT("win32 to MFC")));
-		ReleaseDC(hwnd, hdc);
+		OnLButtonDown(hWnd, uMsg, wParam, lParam);
 		break;
 	case WM_PAINT:
-		HDC hDC;
-		PAINTSTRUCT ps;
-		hDC = BeginPaint(hwnd, &ps);
-		TextOut(hDC, 0, 0, TEXT("Hello world!"), wcslen(TEXT("Hello world!")));
-		EndPaint(hwnd, &ps);
+		OnPaint(hWnd, uMsg, wParam, lParam);
 		break;
 	case WM_DESTROY:
-		PostQuitMessage(0);
+		OnDestroy(hWnd, uMsg, wParam, lParam);
 	default:
-		return DefWindowProc(hwnd, uMsg, wParam, lParam);
+		return DefWindowProc(hWnd, uMsg, wParam, lParam);
 	}
 
+	return 0;
+}
+
+LRESULT OnChar(
+	HWND hWnd,
+	UINT uMsg,
+	WPARAM wParam,
+	LPARAM lParam
+)
+{
+	TCHAR sztchar[20];
+	wsprintf(sztchar, TEXT("you pressed %c key"), (TCHAR)wParam);
+	MessageBox(hWnd, sztchar, TEXT("WM_CHAR"), 0);
+	return 0;
+}
+
+LRESULT OnLButtonDown(
+	HWND hWnd,
+	UINT uMsg,
+	WPARAM wParam,
+	LPARAM lParam
+) {
+	HDC hdc;
+	hdc = GetDC(hWnd);
+	TextOut(hdc, 0, 50, TEXT("win32 to MFC"), wcslen(TEXT("win32 to MFC")));
+	ReleaseDC(hWnd, hdc);
+	return 0;
+}
+
+LRESULT OnPaint(
+	HWND hWnd,
+	UINT uMsg,
+	WPARAM wParam,
+	LPARAM lParam
+) {
+	HDC hDC;
+	PAINTSTRUCT ps;
+	hDC = BeginPaint(hWnd, &ps);
+	TextOut(hDC, 0, 0, TEXT("Hello world!"), wcslen(TEXT("Hello world!")));
+	EndPaint(hWnd, &ps);
+	return 0;
+}
+
+LRESULT OnDestroy(
+	HWND hWnd,
+	UINT uMsg,
+	WPARAM wParam,
+	LPARAM lParam
+) {
+	PostQuitMessage(0);
 	return 0;
 }
